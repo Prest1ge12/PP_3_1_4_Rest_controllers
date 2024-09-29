@@ -1,0 +1,56 @@
+/* Шапка */
+.bg-body-tertiary {
+    background-color: #343a3f !important;
+}
+
+/*.authUserRoles {*/
+/*    text-align: left !important;*/
+/*}*/
+
+
+.bg-dark {
+    background-color: #343a3f !important;
+}
+
+.navbar-text {
+    color: white !important;
+}
+
+.btn .logout {
+    color: #dee4e4;
+}
+
+/* Боковая панель */
+#sidebar {
+    background-color: #fff !important; /* Пример: светло-серый */
+    color: #000 !important;
+}
+
+/* Стили для ссылок в боковой панели */
+#sidebar a {
+    color: #007bff !important; /* Пример: синий цвет ссылок */
+}
+
+/* Стили для выделения активной ссылки в боковой панели */
+#sidebar a.active {
+    font-weight: bold !important;
+    color: #000 !important;
+}
+
+/* Выравнивание кнопок и ячеек в таблице */
+td {
+    vertical-align: middle !important;
+}
+
+/*!* Выровнять кнопки по правому краю *!*/
+/*td:last-child {*/
+/*    text-align: right !important;*/
+/*}*/
+.update-button{
+    margin-right: 20px;
+}
+/* Основной контейнер */
+.col-md-9 {
+    background-color: #f6f7f8;
+}
+
