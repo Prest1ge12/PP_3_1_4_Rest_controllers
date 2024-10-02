@@ -1,23 +1,21 @@
-package ru.kata.spring.boot_security.demo.controllers;
+package ru.kata.spring.bootSecurity.demo.controllers;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.RoleService;
-import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.bootSecurity.demo.model.User;
+import ru.kata.spring.bootSecurity.demo.service.UserService;
 
 import java.util.List;
 
@@ -26,6 +24,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
@@ -39,25 +38,17 @@ public class UserController {
     @GetMapping()
     public List<User> getAllUsers() {
         return userService.getAllUsers();
+
     }
 
+    // Создаю пользователя
     @PostMapping()
-    public ResponseEntity<HttpStatus> createUser(@RequestParam String createForm_name,
-                                                 @RequestParam String createForm_surname,
-                                                 @RequestParam int createForm_age,
-                                                 @RequestParam String createForm_email,
-                                                 @RequestParam String createForm_password,
-                                                 @RequestParam List<Long> setRoles) {
-        User user = new User();
-        user.setUsername(createForm_name);
-        user.setUserSurname(createForm_surname);
-        user.setAge(createForm_age);
-        user.setUserEmail(createForm_email);
-        user.setPassword(createForm_password);
-
-        userService.saveUser(user, setRoles);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<HttpStatus> createUser(@RequestBody User user,
+                                                 @RequestParam List<Long> roles) {
+        System.out.println("Received user: " + user);
+        System.out.println("Received roles: " + roles);
+        userService.saveUser(user, roles);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

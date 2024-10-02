@@ -1,8 +1,8 @@
-package ru.kata.spring.boot_security.demo.dao;
+package ru.kata.spring.bootSecurity.demo.dao;
 
 
 import org.springframework.stereotype.Repository;
-import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.bootSecurity.demo.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;

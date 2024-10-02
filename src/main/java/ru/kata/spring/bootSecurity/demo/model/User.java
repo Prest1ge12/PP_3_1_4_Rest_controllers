@@ -1,8 +1,7 @@
-package ru.kata.spring.boot_security.demo.model;
+package ru.kata.spring.bootSecurity.demo.model;
 
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.CascadeType;
@@ -42,6 +41,7 @@ public class User implements UserDetails {
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @Column(nullable = false)
     private Set<Role> roles;
 
     public User() {
@@ -136,9 +136,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
-                .toList();
+        return roles;
     }
 
 

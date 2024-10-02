@@ -1,4 +1,4 @@
-package ru.kata.spring.boot_security.demo.service;
+package ru.kata.spring.bootSecurity.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -6,14 +6,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.dao.RoleDao;
-import ru.kata.spring.boot_security.demo.dao.UserDao;
-import ru.kata.spring.boot_security.demo.model.Role;
-import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.bootSecurity.demo.dao.RoleDao;
+import ru.kata.spring.bootSecurity.demo.dao.UserDao;
+import ru.kata.spring.bootSecurity.demo.model.Role;
+import ru.kata.spring.bootSecurity.demo.model.User;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -44,17 +45,19 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional
     public void saveUser(User user, List<Long> roles) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // Кодируем пароль
+        System.out.println("ЗДЕСЬ БУДЕМ МЕНЯТЬ РОЛИ: " + user);
 
-        // Очистка существующих ролей
-        user.setRoles(new HashSet<>());
-        // Добавляем новые роли
+
+        Set<Role> existingRoles = new HashSet<>();
         for (Long roleId : roles) {
-            Role role = roleDao.findRoleById(roleId);
-            if (role != null) {
-                user.getRoles().add(role);
+            Role existingRole = roleDao.findRoleById(roleId);
+            if (existingRole != null) {
+                existingRoles.add(existingRole);
             }
         }
+
+        user.setRoles(existingRoles); // Устанавливаем роли для пользователя
         userDao.saveUser(user);
     }
 

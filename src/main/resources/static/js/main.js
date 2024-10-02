@@ -215,9 +215,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (CreateUserBtn) {
         CreateUserBtn.addEventListener("click", function () {
             clearAllUsers();
-
-            var createUserForm = document.getElementById("createUserForm").reset();
-            createUserForm.reset();
+            document.getElementById("createUserForm").reset();
+            // var createUserForm = document.getElementById("createUserForm").reset();
+            // createUserForm.reset();
             console.log("Нажал на кнопку создать нового юзера");
         });
     }
@@ -244,88 +244,106 @@ function clearAllUsers() {
     }
 }
 
-// Добавление пользователя
+// СОЗДАНИЕ ПОЛЬЗОВАТЕЛЯ
 document.getElementById('createUserForm').addEventListener('submit', function (event) {
     event.preventDefault(); // Отменяем стандартное поведение формы
 
-    const formData = new FormData(this);
-
-    // Логируем данные перед отправкой
-    for (const [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-    }
-
-    // Получаем выбранные роли
-    const rolesSelect = document.getElementById('setRoles');
-    const selectedRoles = Array.from(rolesSelect.selectedOptions).map(option => option.value);
-
-    // Добавляем выбранные роли в FormData
-    selectedRoles.forEach(role => formData.append('setRoles', role));
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/users', true);
-    xhr.setRequestHeader('Accept', 'application/json');
-
-    xhr.onload = function () {
-        if (xhr.status >= 200 && xhr.status < 300) {
-            // alert('Пользователь успешно создан!');
-            document.querySelector("#all-users-tab").click();
-        } else {
-            alert('Ошибка при создании пользователя: ' + xhr.statusText);
-            console.error(xhr.responseText); // Логируем ответ сервера для анализа
-        }
+    // Собираем данные пользователя
+    const userData = {
+        username: this.username.value,
+        userEmail: this.userEmail.value,
+        age: this.age.value,
+        userSurname: this.userSurname.value,
+        password: this.password.value
     };
 
-    xhr.send(formData);
+    // Получаем выбранные роли
+    const roles = Array.from(this.elements.roles)
+        .filter(role => role.checked)
+        .map(role => role.value); // Получаем значения выбранных ролей
+
+    console.log('Отправляемые данные:', JSON.stringify(userData)); // Логируем отправляемые данные
+    console.log('Выбранные роли:', roles); // Логируем выбранные роли
+
+    // Создаем параметры для запроса
+    const params = new URLSearchParams();
+    roles.forEach(roleId => params.append('roles', roleId));
+
+    // Отправляем данные на сервер
+    fetch(`/api/users?${params.toString()}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(userData),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Ошибка при создании пользователя: ' + response.statusText);
+            }
+            return response.json(); // Обрабатываем ответ
+        })
+        .then(data => {
+            console.log('Пользователь создан:', data);
+            document.querySelector("#all-users-tab").click(); // Переходим на вкладку пользователей
+        })
+        .catch(error => {
+            alert('Ошибка при создании пользователя: ' + error.message);
+            console.error('Детали ошибки:', error);
+        });
 });
 
 // Открыть модальное окно обновления пользователя
 document.getElementById('updateForm').addEventListener('submit', function (event) {
     event.preventDefault(); // Отменяем стандартное поведение формы
 
-    const formData = new FormData(this);
-    const userId = document.getElementById('editUserId').value; // Получаем ID пользователя из скрытого поля
+    // Собираем данные из формы
+    const userId = document.getElementById('editUserId').value;
+    const userData = {
+        editUserModal_name: this.editUserModal_name.value,
+        editUserModal_userEmail: this.editUserModal_userEmail.value,
+        editUserModal_userSurname: this.editUserModal_userSurname.value,
+        editUserModal_age: this.editUserModal_age.value,
+        editUserModal_password: this.editUserModal_password.value
+    };
 
     // Получаем выбранные роли
-    const rolesSelect = document.getElementById('editRoles');
-    const selectedRoles = Array.from(rolesSelect.selectedOptions).map(option => option.value);
+    const roles = Array.from(this.elements.roles)
+        .filter(role => role.checked)
+        .map(role => role.value); // Получаем значения выбранных ролей
 
-    // Добавляем выбранные роли в FormData
-    selectedRoles.forEach(role => formData.append('roles', role));
+    console.log('Обновляемые данные:', JSON.stringify(userData)); // Логируем отправляемые данные
+    console.log('Выбранные роли:', roles); // Логируем выбранные роли
+
+    // Создаем параметры для запроса
+    const params = new URLSearchParams();
+    roles.forEach(roleId => params.append('roles', roleId));
+    Object.keys(userData).forEach(key => {
+        params.append(key, userData[key]);
+    });
 
     // Отправляем данные на сервер
-    fetch(`/api/users/${userId}`, {
+    fetch(`/api/users/${userId}?${params.toString()}`, {
         method: 'PUT',
-        body: formData
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
     })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Ошибка при обновлении пользователя: ' + response.statusText);
             }
-            return response.json();
+            return response.json(); // Обрабатываем ответ
         })
         .then(data => {
-            console.log(data); // Логируем обновленного пользователя
+            console.log('Пользователь обновлен:', data);
             fetchUsers();
             document.querySelector(".btn-close").click();
-
         })
         .catch(error => {
-            console.error('Ошибка:', error);
-            alert('Произошла ошибка при обновлении пользователя.');
+            alert('Ошибка при обновлении пользователя: ' + error.message);
+            console.error('Детали ошибки:', error);
         });
 });
-
-// ЗАГРУЖАЕМ РОЛИ ИЗ БД ПРИ ЗАГРУЗКЕ СТРАНИЦЫ
-fetch('/api/roles')
-    .then(response => response.json())
-    .then(roles => {
-        const rolesSelect = document.getElementById('setRoles');
-        roles.forEach(role => {
-            const option = document.createElement('option');
-            option.value = role.id; // предполагается, что у Role есть id
-            option.textContent = role.roleName; // предполагается, что у Role есть roleName
-            rolesSelect.appendChild(option);
-        });
-    })
-    .catch(error => console.error('Ошибка при загрузке ролей:', error));
