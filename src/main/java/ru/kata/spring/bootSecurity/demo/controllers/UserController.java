@@ -43,11 +43,9 @@ public class UserController {
 
     // Создаю пользователя
     @PostMapping()
-    public ResponseEntity<HttpStatus> createUser(@RequestBody User user,
-                                                 @RequestParam List<Long> roles) {
+    public ResponseEntity<HttpStatus> createUser(@RequestBody User user) {
         System.out.println("Received user: " + user);
-        System.out.println("Received roles: " + roles);
-        userService.saveUser(user, roles);
+        userService.saveUser(user);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
@@ -60,11 +58,11 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<HttpStatus> updateUser(
             @PathVariable Long id,
-            @RequestParam String editUserModal_name,
-            @RequestParam String editUserModal_userSurname,
-            @RequestParam int editUserModal_age,
-            @RequestParam String editUserModal_userEmail,
-            @RequestParam(required = false) String editUserModal_password,
+            @RequestParam String editUserModalName,
+            @RequestParam String editUserModalUserEmail,
+            @RequestParam int editUserModalAge,
+            @RequestParam String editUserModalUserSurname,
+            @RequestParam(required = false) String editUserModalPassword,
             @RequestParam List<Long> roles) {
 
         User user = userService.getUserById(id);
@@ -73,12 +71,12 @@ public class UserController {
         }
 
         // Обновление полей пользователя
-        user.setUsername(editUserModal_name);
-        user.setUserEmail(editUserModal_userEmail);
-        user.setUserSurname(editUserModal_userSurname);
-        user.setAge(editUserModal_age);
+        user.setUsername(editUserModalName);
+        user.setUserEmail(editUserModalUserEmail);
+        user.setUserSurname(editUserModalUserSurname);
+        user.setAge(editUserModalAge);
 
-        userService.updateUser(id, user, editUserModal_password, roles); // Сохраняем обновленного пользователя и идентификаторы ролей
+        userService.updateUser(id, user, editUserModalPassword, roles); // Сохраняем обновленного пользователя и идентификаторы ролей
 
         return ResponseEntity.ok(HttpStatus.OK); // Возвращаем успешный ответ
     }

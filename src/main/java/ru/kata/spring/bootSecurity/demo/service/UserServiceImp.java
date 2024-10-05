@@ -44,16 +44,17 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public void saveUser(User user, List<Long> roles) {
+    public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword())); // Кодируем пароль
         System.out.println("ЗДЕСЬ БУДЕМ МЕНЯТЬ РОЛИ: " + user);
-
+        System.out.println(user.getRoles());
 
         Set<Role> existingRoles = new HashSet<>();
-        for (Long roleId : roles) {
-            Role existingRole = roleDao.findRoleById(roleId);
-            if (existingRole != null) {
-                existingRoles.add(existingRole);
+        for (Role role : user.getRoles()) {
+            Role selectRoleId = roleDao.findRoleByName(role.getRoleName());
+            System.out.println(selectRoleId);
+            if (selectRoleId != null) {
+                existingRoles.add(selectRoleId);
             }
         }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -106,35 +106,39 @@
 
                                         <div class="mb-3">
                                             <label for="username" class="form-label">Имя</label>
-                                            <input id="username" type="text" class="form-control" name="editUserModal_name" required>
+                                            <input id="username" type="text" class="form-control"
+                                                   name="editUserModalName" required>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="userEmail" class="form-label">Email</label>
-                                            <input id="userEmail" type="email" class="form-control" name="editUserModal_userEmail" required>
+                                            <input id="userEmail" type="email" class="form-control"
+                                                   name="editUserModalUserEmail" required>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="userSurname" class="form-label">Фамилия</label>
-                                            <input id="userSurname" type="text" class="form-control" name="editUserModal_userSurname" required>
+                                            <input id="userSurname" type="text" class="form-control"
+                                                   name="editUserModalUserSurname" required>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="age" class="form-label">Возраст</label>
-                                            <input type="number" class="form-control" id="age" name="editUserModal_age" required>
+                                            <input type="number" class="form-control" id="age" name="editUserModalAge"
+                                                   required>
                                         </div>
 
                                         <label for="password">Новый пароль (если нужно изменить): </label>
-                                        <input id="password" type="text" class="form-control" name="editUserModal_password">
+                                        <input id="password" type="text" class="form-control"
+                                               name="editUserModalPassword">
 
                                         <br>
 
                                         <div class="mb-3">
                                             <label>Назначить роли:</label><br>
                                             <div>
-                                                <input type="checkbox" name="roles" value="1"> ADMIN<br>
-                                                <input type="checkbox" name="roles" value="2"> USER<br>
-                                                <!-- Добавьте остальные роли здесь -->
+                                                <input type="checkbox" name="roles" value="1">ADMIN<br>
+                                                <input type="checkbox" name="roles" value="2">USER<br>
                                             </div>
                                         </div>
 
@@ -149,8 +153,8 @@
                     <div class="tab-pane fade" id="createForm" role="tabpanel" aria-labelledby="new-user-tab">
                         <form id="createUserForm" class="mt-3">
                             <div class="mb-3">
-                                <label for="username_create" class="form-label">Введите имя</label>
-                                <input type="text" class="form-control" name="username" id="username_create" required>
+                                <label for="usernameCreate" class="form-label">Введите имя</label>
+                                <input type="text" class="form-control" name="username" id="usernameCreate" required>
                             </div>
                             <div class="mb-3">
                                 <label for="mail" class="form-label">E-mail</label>
@@ -171,8 +175,8 @@
                             <div class="mb-3">
                                 <label>Назначить роли:</label><br>
                                 <div>
-                                    <input type="checkbox" name="roles" value="1"> ADMIN<br>
-                                    <input type="checkbox" name="roles" value="2"> USER<br>
+                                    <input type="checkbox" name="createRoles" value="1">ADMIN<br>
+                                    <input type="checkbox" name="createRoles" value="2">USER<br>
                                     <!-- Добавьте остальные роли здесь -->
                                 </div>
                             </div>

@@ -123,7 +123,6 @@ function handleDeleteButton(userId) {
 }
 
 
-
 // Функция для загрузки пользователей
 function fetchUsers() {
     fetch('/api/users')
@@ -254,23 +253,28 @@ document.getElementById('createUserForm').addEventListener('submit', function (e
         userEmail: this.userEmail.value,
         age: this.age.value,
         userSurname: this.userSurname.value,
-        password: this.password.value
+        password: this.password.value,
+
     };
 
-    // Получаем выбранные роли
-    const roles = Array.from(this.elements.roles)
+    const roles = Array.from(this.elements.createRoles)
         .filter(role => role.checked)
-        .map(role => role.value); // Получаем значения выбранных ролей
+        .map(role => {
+            if (role.value == 1) {
+                return {roleName: 'ADMIN'};
+            } else if (role.value == 2) {
+                return {roleName: 'USER'};
+            }
+        });
+
+    // Включаем роли в объект userData
+    userData.roles = roles;
 
     console.log('Отправляемые данные:', JSON.stringify(userData)); // Логируем отправляемые данные
     console.log('Выбранные роли:', roles); // Логируем выбранные роли
 
-    // Создаем параметры для запроса
-    const params = new URLSearchParams();
-    roles.forEach(roleId => params.append('roles', roleId));
-
     // Отправляем данные на сервер
-    fetch(`/api/users?${params.toString()}`, {
+    fetch(`/api/users`, { // Убрали лишнюю фигурную скобку
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -301,11 +305,11 @@ document.getElementById('updateForm').addEventListener('submit', function (event
     // Собираем данные из формы
     const userId = document.getElementById('editUserId').value;
     const userData = {
-        editUserModal_name: this.editUserModal_name.value,
-        editUserModal_userEmail: this.editUserModal_userEmail.value,
-        editUserModal_userSurname: this.editUserModal_userSurname.value,
-        editUserModal_age: this.editUserModal_age.value,
-        editUserModal_password: this.editUserModal_password.value
+        editUserModalName: this.editUserModalName.value,
+        editUserModalUserEmail: this.editUserModalUserEmail.value,
+        editUserModalUserSurname: this.editUserModalUserSurname.value,
+        editUserModalAge: this.editUserModalAge.value,
+        editUserModalPassword: this.editUserModalPassword.value
     };
 
     // Получаем выбранные роли
