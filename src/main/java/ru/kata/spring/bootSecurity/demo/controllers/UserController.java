@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kata.spring.bootSecurity.demo.model.User;
 import ru.kata.spring.bootSecurity.demo.service.UserService;
@@ -56,28 +55,46 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HttpStatus> updateUser(
-            @PathVariable Long id,
-            @RequestParam String editUserModalName,
-            @RequestParam String editUserModalUserEmail,
-            @RequestParam int editUserModalAge,
-            @RequestParam String editUserModalUserSurname,
-            @RequestParam(required = false) String editUserModalPassword,
-            @RequestParam List<Long> roles) {
+    public ResponseEntity<HttpStatus> updateUser(@RequestBody User updatedUser) {
 
-        User user = userService.getUserById(id);
-        if (user == null) {
+        User existinUser = userService.getUserById(updatedUser.getId());
+        if (existinUser == null) {
             return ResponseEntity.ok(HttpStatus.NOT_FOUND);
         }
 
-        // Обновление полей пользователя
-        user.setUsername(editUserModalName);
-        user.setUserEmail(editUserModalUserEmail);
-        user.setUserSurname(editUserModalUserSurname);
-        user.setAge(editUserModalAge);
+        System.out.println("Обновлённый: " + updatedUser);
 
-        userService.updateUser(id, user, editUserModalPassword, roles); // Сохраняем обновленного пользователя и идентификаторы ролей
+        userService.updateUser(updatedUser);
 
-        return ResponseEntity.ok(HttpStatus.OK); // Возвращаем успешный ответ
+        return ResponseEntity.ok(HttpStatus.OK);
     }
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<HttpStatus> updateUser(
+//            @PathVariable Long id,
+//            @RequestParam String editUserModalName,
+//            @RequestParam String editUserModalUserEmail,
+//            @RequestParam int editUserModalAge,
+//            @RequestParam String editUserModalUserSurname,
+//            @RequestParam(required = false) String editUserModalPassword,
+//            @RequestParam List<Long> roles) {
+//
+//        User user = userService.getUserById(id);
+//        if (user == null) {
+//            return ResponseEntity.ok(HttpStatus.NOT_FOUND);
+//        }
+//
+//        // Обновление полей пользователя
+//        user.setUsername(editUserModalName);
+//        user.setUserEmail(editUserModalUserEmail);
+//        user.setUserSurname(editUserModalUserSurname);
+//        user.setAge(editUserModalAge);
+//
+//        userService.updateUser(id, user, editUserModalPassword, roles); // Сохраняем обновленного пользователя и идентификаторы ролей
+//
+//        return ResponseEntity.ok(HttpStatus.OK); // Возвращаем успешный ответ
+//    }
+
+
+
 }

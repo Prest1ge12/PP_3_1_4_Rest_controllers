@@ -64,38 +64,37 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(Long id, User updateUser, String updatePassword, List<Long> roles) {
+    public void updateUser(User updatedUser) {
 
-        User existingUser = userDao.findUserById(id);
+        User existingUser = userDao.findUserById(updatedUser.getId());
 
         if (existingUser == null) {
-            throw new EntityNotFoundException("User not found with id: " + id);
+            throw new EntityNotFoundException("Не найден пользователь с id: " + updatedUser.getId());
         }
 
-        // Очистка существующих ролей
-        existingUser.setRoles(new HashSet<>());
 
-        // Добавляем новые роли
-        for (Long roleId : roles) {
-            Role role = roleDao.findRoleById(roleId);
-            if (role != null) {
-                existingUser.getRoles().add(role);
+        Set<Role> updatedRoles = new HashSet<>();
+        for (Role role : updatedUser.getRoles()) {
+            Role existingRole = roleDao.findRoleByName(role.getRoleName());
+            if (existingRole != null) {
+                updatedRoles.add(existingRole);
             }
         }
 
-        if (updateUser.getPassword() != null && !updateUser.getPassword().isEmpty() &&
-                !updateUser.getPassword().equals(updatePassword)) {
-            existingUser.setPassword(passwordEncoder.encode(updatePassword));
+        existingUser.setRoles(updatedRoles);
+
+
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty() &&
+                !existingUser.getPassword().equals(updatedUser.getPassword())) {
+            existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
 
-        //TODO Удалил добавление пароля проверить
+        existingUser.setUsername(updatedUser.getUsername());
+        existingUser.setUserEmail(updatedUser.getUserEmail());
+        existingUser.setUserSurname(updatedUser.getUserSurname());
+        existingUser.setAge(updatedUser.getAge());
+        System.out.println("Обновлённый в сервис слое: " + existingUser);
 
-        existingUser.setUsername(updateUser.getUsername());
-        existingUser.setUserSurname(updateUser.getUserSurname());
-        existingUser.setUserEmail(updateUser.getUserEmail());
-        existingUser.setAge(updateUser.getAge());
-
-        // Обновляем пользователя в DAO
         userDao.updateUser(existingUser);
     }
 

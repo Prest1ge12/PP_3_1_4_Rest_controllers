@@ -298,42 +298,41 @@ document.getElementById('createUserForm').addEventListener('submit', function (e
         });
 });
 
-// Открыть модальное окно обновления пользователя
 document.getElementById('updateForm').addEventListener('submit', function (event) {
     event.preventDefault(); // Отменяем стандартное поведение формы
 
     // Собираем данные из формы
     const userId = document.getElementById('editUserId').value;
     const userData = {
-        editUserModalName: this.editUserModalName.value,
-        editUserModalUserEmail: this.editUserModalUserEmail.value,
-        editUserModalUserSurname: this.editUserModalUserSurname.value,
-        editUserModalAge: this.editUserModalAge.value,
-        editUserModalPassword: this.editUserModalPassword.value
+        id: userId, // Важно включить ID
+        username: this.editUserModalName.value,
+        userEmail: this.editUserModalUserEmail.value,
+        userSurname: this.editUserModalUserSurname.value,
+        age: this.editUserModalAge.value,
+        password: this.editUserModalPassword.value
     };
 
-    // Получаем выбранные роли
-    const roles = Array.from(this.elements.roles)
+    const roles = Array.from(this.elements.updateRoles)
         .filter(role => role.checked)
-        .map(role => role.value); // Получаем значения выбранных ролей
+        .map(role => {
+            if (role.value == 1) {
+                return {roleName: 'ADMIN'};
+            } else if (role.value == 2) {
+                return {roleName: 'USER'};
+            }
+        });
 
-    console.log('Обновляемые данные:', JSON.stringify(userData)); // Логируем отправляемые данные
-    console.log('Выбранные роли:', roles); // Логируем выбранные роли
+    // Включаем роли в объект userData
+    userData.roles = roles;
 
-    // Создаем параметры для запроса
-    const params = new URLSearchParams();
-    roles.forEach(roleId => params.append('roles', roleId));
-    Object.keys(userData).forEach(key => {
-        params.append(key, userData[key]);
-    });
-
-    // Отправляем данные на сервер
-    fetch(`/api/users/${userId}?${params.toString()}`, {
+    // Отправляем данные на сервер через body
+    fetch(`/api/users/${userId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
+        body: JSON.stringify(userData), // Передаём тело запроса
     })
         .then(response => {
             if (!response.ok) {
@@ -343,7 +342,7 @@ document.getElementById('updateForm').addEventListener('submit', function (event
         })
         .then(data => {
             console.log('Пользователь обновлен:', data);
-            fetchUsers();
+            fetchUsers(); // Обновляем список пользователей
             document.querySelector(".btn-close").click();
         })
         .catch(error => {

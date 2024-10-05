@@ -13,7 +13,9 @@ public interface UserService extends UserDetailsService {
 
     void saveUser(User user);
 
-    void updateUser(Long id, User updateUser, String password, List<Long> roles);
+//    void updateUser(Long id, User updateUser, String password, List<Long> roles);
+
+    void updateUser(User updatedUser);
 
     void deleteUser(Long id);
 
